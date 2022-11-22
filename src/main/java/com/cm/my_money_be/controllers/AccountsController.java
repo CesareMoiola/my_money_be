@@ -13,9 +13,9 @@ import java.util.Map;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:3000")
-public class AccountController {
+public class AccountsController {
 
-    Logger logger = LogManager.getLogger(AccountController.class);
+    Logger logger = LogManager.getLogger(AccountsController.class);
 
     @Autowired
     AccountDAO accountDAO;

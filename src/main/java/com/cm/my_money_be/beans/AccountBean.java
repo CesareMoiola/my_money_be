@@ -1,8 +1,5 @@
 package com.cm.my_money_be.beans;
 
-import com.cm.my_money_be.data.Account;
-import com.cm.my_money_be.data.Balance;
-
 import java.io.Serializable;
 
 public class AccountBean implements Serializable {

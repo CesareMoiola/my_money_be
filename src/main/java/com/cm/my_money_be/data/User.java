@@ -20,6 +20,8 @@ public class User implements UserDetails {
     private String password;
     @OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
     private List<Account> accounts;
+    @OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH}, orphanRemoval = true)
+    private List<Recurrence> recurrences;
 
 
     public User(){
@@ -93,6 +95,19 @@ public class User implements UserDetails {
     public void addAccount(Account account){
         if(accounts == null) accounts = new ArrayList<>();
         accounts.add(account);
+    }
+
+    public List<Recurrence> getRecurrences() {
+        return recurrences;
+    }
+
+    public void setRecurrences(List<Recurrence> recurrences) {
+        this.recurrences = recurrences;
+    }
+
+    public void addRecurrence(Recurrence recurrence){
+        if(recurrences == null) recurrences = new ArrayList<>();
+        recurrences.add(recurrence);
     }
 
     @Override

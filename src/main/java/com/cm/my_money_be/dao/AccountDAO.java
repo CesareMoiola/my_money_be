@@ -1,7 +1,7 @@
 package com.cm.my_money_be.dao;
 
 import com.cm.my_money_be.beans.AccountBean;
-import com.cm.my_money_be.controllers.AccountController;
+import com.cm.my_money_be.controllers.AccountsController;
 import com.cm.my_money_be.data.Account;
 import com.cm.my_money_be.data.Balance;
 import com.cm.my_money_be.data.User;
@@ -17,7 +17,7 @@ import java.util.List;
 @Repository
 public class AccountDAO {
 
-    Logger logger = LogManager.getLogger(AccountController.class);
+    Logger logger = LogManager.getLogger(AccountsController.class);
 
     @Autowired
     UserRepository userRepository;
@@ -111,8 +111,10 @@ public class AccountDAO {
         //Find the account
         if(user.getAccounts() != null && !user.getAccounts().isEmpty()){
             for(Account currentAccount : user.getAccounts()){
-                if(currentAccount.getId() == accountId) account = currentAccount;
-                break;
+                if(currentAccount.getId() == accountId) {
+                    account = currentAccount;
+                    break;
+                }
             }
         }
 
