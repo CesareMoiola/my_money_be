@@ -18,10 +18,12 @@ public class User implements UserDetails {
     private String lastName;
     private String email;
     private String password;
-    @OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
+    @OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH}, orphanRemoval = true)
     private List<Account> accounts;
     @OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH}, orphanRemoval = true)
     private List<Recurrence> recurrences;
+    @OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH}, orphanRemoval = true)
+    private List<Saving> savings;
 
 
     public User(){
@@ -108,6 +110,19 @@ public class User implements UserDetails {
     public void addRecurrence(Recurrence recurrence){
         if(recurrences == null) recurrences = new ArrayList<>();
         recurrences.add(recurrence);
+    }
+
+    public List<Saving> getSavings() {
+        return savings;
+    }
+
+    public void setSavings(List<Saving> savings) {
+        this.savings = savings;
+    }
+
+    public void addSaving(Saving saving){
+        if(savings == null) savings = new ArrayList<>();
+        savings.add(saving);
     }
 
     @Override

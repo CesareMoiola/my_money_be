@@ -42,12 +42,16 @@ public class RecurrencesController {
     //Create a new recurrence
     @PostMapping("/save_recurrence")
     public String saveRecurrence(@RequestBody Map<String, String> json){
-        String email = json.get("email");
-        String name = json.get("name");
-        float amount = Float.parseFloat( json.get("amount") );
-        String type = json.get("type");
+        String email;
+        String name;
+        float amount;
+        String type;
 
         try{
+            email = json.get("email");
+            name = json.get("name");
+            amount = Float.parseFloat( json.get("amount") );
+            type = json.get("type");
             recurrencesDAO.createNewRecurrence(email, type, name, amount);
         }
         catch (Exception e){
@@ -81,11 +85,11 @@ public class RecurrencesController {
     //Edit a recurrence
     @PostMapping("/edit_recurrence")
     public String editRecurrence(@RequestBody Map<String, String> json){
-        String email = null;
-        String name = null;
-        Long id = null;
-        float amount = 0f;
-        String type = null;
+        String email;
+        String name;
+        Long id;
+        float amount;
+        String type;
 
         try{
             email = json.get("email");

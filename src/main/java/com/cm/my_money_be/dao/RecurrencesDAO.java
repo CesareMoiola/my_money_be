@@ -49,12 +49,11 @@ public class RecurrencesDAO {
     //Insert new recurrence
     public void createNewRecurrence(String email, String type, String name, float amount) throws Exception {
         User user = userRepository.findByEmail(email);
-        Recurrence account = null;
 
         //If user is not found it throws an exception
         if(user == null) throw new Exception("User with email: " + email + " was not found");
 
-        //Initialize an account
+        //Initialize a recurrence
         Recurrence recurrence = new Recurrence(user, name, amount, type);
 
         user.addRecurrence(recurrence);

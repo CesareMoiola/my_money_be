@@ -24,7 +24,7 @@ public class AccountsController {
     @PostMapping("/get_accounts")
     public List<AccountBean> getAccounts(@RequestBody Map<String, String> json){
         String email = json.get("email");
-        Date date = null;
+        Date date;
 
         try { date = Date.valueOf(json.get("date")); }
         catch (Exception e){
