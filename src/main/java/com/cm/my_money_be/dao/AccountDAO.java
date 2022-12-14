@@ -14,6 +14,8 @@ import org.springframework.stereotype.Repository;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 @Repository
@@ -38,6 +40,9 @@ public class AccountDAO {
             }
         }
 
+        //Order by favorite and balance
+        Collections.sort(accountsBean, Collections.reverseOrder());
+
         return accountsBean;
     }
 
@@ -55,7 +60,7 @@ public class AccountDAO {
 
         if(recentBalance == null) return null;
 
-        return new AccountBean(account.getId(), account.getName(), recentBalance.getAmount());
+        return new AccountBean(account.getId(), account.getName(), recentBalance.getAmount(), account.isFavorite());
     }
 
     //Insert new Balance or update if alrady exsists
@@ -102,8 +107,8 @@ public class AccountDAO {
         }
     }
 
-    //Update account name
-    public void updateAccountName(String email, long accountId, String name) throws Exception {
+    //Update account
+    public void updateAccount(String email, long accountId, String name, boolean favorite) throws Exception {
         User user = userRepository.findByEmail(email);
         Account account = null;
 
@@ -125,6 +130,7 @@ public class AccountDAO {
 
         //If an account has been founded update the name
         account.setName(name);
+        account.setFavorite(favorite);
         userRepository.save(user);
     }
 

@@ -48,7 +48,6 @@ public class BudgetUtils {
         remainingDays = endOfMonth.getDayOfMonth() - now.getDayOfMonth();
 
         //Current budget
-        System.out.println("Amount: " + totalAmount + ", Recurrences: " + totalRemainingRecurrences + ", Saved: " + totalSaved + ", Remaining to save = " + savingsUtils.getRemainingToSave(email));
         currentBudget = totalAmount.add(totalRemainingRecurrences).subtract(totalSaved).subtract(savingsUtils.getRemainingToSave(email));
 
         //Daily budget

@@ -63,14 +63,19 @@ public class AccountsController {
     }
 
     //Save new amount of indicated account dating back to this date
-    @PostMapping("/update_account_name")
-    public String updateAccountName(@RequestBody Map<String, String> json){
-        String email = json.get("email");
-        Long accountId = Long.parseLong( json.get("accountId") );
-        String name = json.get("name");
+    @PostMapping("/update_account")
+    public String updateAccount(@RequestBody Map<String, String> json){
+        String email;
+        Long accountId;
+        String name;
+        boolean favorite;
 
         try{
-            accountDAO.updateAccountName(email, accountId, name);
+            email = json.get("email");
+            accountId = Long.parseLong( json.get("accountId") );
+            name = json.get("name");
+            favorite = Boolean.parseBoolean(json.get("favorite"));
+            accountDAO.updateAccount(email, accountId, name, favorite);
         }
         catch (Exception e){
             logger.error(e.getMessage());
