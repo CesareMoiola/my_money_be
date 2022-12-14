@@ -2,6 +2,9 @@ package com.cm.my_money_be.controllers;
 
 import com.cm.my_money_be.beans.RecurrenceBean;
 import com.cm.my_money_be.dao.RecurrencesDAO;
+import com.cm.my_money_be.utils.RecurrencesUtils;
+import com.cm.my_money_be.utils.SavingsUtils;
+import com.cm.my_money_be.utils.RecurrencesUtils.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,9 +12,12 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import static com.cm.my_money_be.utils.RecurrencesUtils.OTHER;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:3000")
@@ -22,6 +28,9 @@ public class RecurrencesController {
     @Autowired
     RecurrencesDAO recurrencesDAO;
 
+    @Autowired
+    SavingsUtils savingsUtils;
+
     //Returns all recurrences owned by the user with specified email
     @PostMapping("/get_recurrences")
     public List<RecurrenceBean> getRecurrences(@RequestBody Map<String, String> json){
@@ -30,6 +39,10 @@ public class RecurrencesController {
 
         try{
             recurrencesBean = recurrencesDAO.getRecurrences(email);
+
+            //Add savings
+            RecurrenceBean recurrence = new RecurrenceBean(-1, "Savings", savingsUtils.getTotalMonthlyAmount(email), false, OTHER);
+            recurrencesBean.add(recurrence);
         }
         catch (Exception e) {
             logger.error(e.getMessage());
@@ -44,13 +57,13 @@ public class RecurrencesController {
     public String saveRecurrence(@RequestBody Map<String, String> json){
         String email;
         String name;
-        float amount;
+        BigDecimal amount;
         String type;
 
         try{
             email = json.get("email");
             name = json.get("name");
-            amount = Float.parseFloat( json.get("amount") );
+            amount = new BigDecimal( json.get("amount") );
             type = json.get("type");
             recurrencesDAO.createNewRecurrence(email, type, name, amount);
         }
@@ -88,14 +101,14 @@ public class RecurrencesController {
         String email;
         String name;
         Long id;
-        float amount;
+        BigDecimal amount;
         String type;
 
         try{
             email = json.get("email");
             name = json.get("name");
             id = Long.parseLong(json.get("id"));
-            amount = Float.parseFloat( json.get("amount") );
+            amount = new BigDecimal( json.get("amount") );
             type = json.get("type");
             recurrencesDAO.editRecurrence(email, id, type, name, amount);
         }

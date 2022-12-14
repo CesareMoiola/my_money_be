@@ -1,7 +1,8 @@
 package com.cm.my_money_be.data;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.math.BigDecimal;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "savings")
@@ -9,30 +10,37 @@ public class Saving {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private long id;
     @ManyToOne( cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH} )
     @JoinColumn(name = "user")
     private User user;
     private String name;
-    private float amount;
-    private float saved;
-    private Date date;
+    private String type;
+    private BigDecimal amount;
+    private BigDecimal saved;
+    private LocalDate startingDate;
+    private LocalDate finalDate;
+    private LocalDate updateDate;
     private boolean active;
 
     public Saving(){
         super();
     }
 
-    public Saving(User user, String name, float amount, float saved, Date date, boolean active) {
+    public Saving(User user, String name, String type, BigDecimal amount, BigDecimal saved, LocalDate startingDate, LocalDate finalDate, LocalDate updateDate, boolean active) {
         this.user = user;
         this.name = name;
+        this.type = type;
         this.amount = amount;
         this.saved = saved;
-        this.date = date;
+        this.startingDate = startingDate;
+        this.finalDate = finalDate;
+        this.updateDate = updateDate;
         this.active = active;
     }
 
-    public Long getId() {
+
+    public long getId() {
         return id;
     }
 
@@ -56,28 +64,52 @@ public class Saving {
         this.name = name;
     }
 
-    public float getAmount() {
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public BigDecimal getAmount() {
         return amount;
     }
 
-    public void setAmount(float amount) {
+    public void setAmount(BigDecimal amount) {
         this.amount = amount;
     }
 
-    public float getSaved() {
+    public BigDecimal getSaved() {
         return saved;
     }
 
-    public void setSaved(float saved) {
+    public void setSaved(BigDecimal saved) {
         this.saved = saved;
     }
 
-    public Date getDate() {
-        return date;
+    public LocalDate getStartingDate() {
+        return startingDate;
     }
 
-    public void setDate(Date date) {
-        this.date = date;
+    public void setStartingDate(LocalDate startingDate) {
+        this.startingDate = startingDate;
+    }
+
+    public LocalDate getFinalDate() {
+        return finalDate;
+    }
+
+    public void setFinalDate(LocalDate finalDate) {
+        this.finalDate = finalDate;
+    }
+
+    public LocalDate getUpdateDate() {
+        return updateDate;
+    }
+
+    public void setUpdateDate(LocalDate updateDate) {
+        this.updateDate = updateDate;
     }
 
     public boolean isActive() {
@@ -88,15 +120,19 @@ public class Saving {
         this.active = active;
     }
 
+
     @Override
     public String toString() {
         return "Saving{" +
                 "id=" + id +
                 ", user=" + user.getId() +
                 ", name='" + name + '\'' +
+                ", type='" + type + '\'' +
                 ", amount=" + amount +
                 ", saved=" + saved +
-                ", date=" + date +
+                ", startingDate=" + startingDate +
+                ", finalDate=" + finalDate +
+                ", updateDate=" + updateDate +
                 ", active=" + active +
                 '}';
     }

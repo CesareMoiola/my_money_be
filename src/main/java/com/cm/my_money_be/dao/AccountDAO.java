@@ -10,7 +10,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-import java.sql.Date;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,7 +25,7 @@ public class AccountDAO {
     UserRepository userRepository;
 
     //Get all accounts with balance updated as of the date indicated
-    public List<AccountBean> getAccountsBean(String email, Date date){
+    public List<AccountBean> getAccountsBean(String email, LocalDate date){
         List<AccountBean> accountsBean = new ArrayList<>();
         User user = userRepository.findByEmail(email);
 
@@ -40,7 +42,7 @@ public class AccountDAO {
     }
 
     //Get the account with balance updated as of the date indicated
-    public AccountBean getAccountBean(Account account, Date date){
+    public AccountBean getAccountBean(Account account, LocalDate date){
 
         List<Balance> balances = account.getBalances();
         Balance recentBalance = account.getBalance(date);;
@@ -57,7 +59,7 @@ public class AccountDAO {
     }
 
     //Insert new Balance or update if alrady exsists
-    public void setBalance(String email, long accountId, Date date, float amount) throws Exception {
+    public void setBalance(String email, long accountId, LocalDate date, BigDecimal amount) throws Exception {
         User user = userRepository.findByEmail(email);
         Account account = null;
         Balance balance = null;
@@ -127,7 +129,7 @@ public class AccountDAO {
     }
 
     //Insert new account
-    public void createNewAccount(String email, String name, float amount, Date date) throws Exception {
+    public void createNewAccount(String email, String name, BigDecimal amount, LocalDate date) throws Exception {
         User user = userRepository.findByEmail(email);
         Account account = null;
         Balance balance = null;
@@ -176,10 +178,10 @@ public class AccountDAO {
     }
 
     //Set an expense on an account
-    public void setExpense(String email, Date date, long accountId, float expenseAmount) throws Exception{
+    public void setExpense(String email, LocalDate date, long accountId, BigDecimal expenseAmount) throws Exception{
         User user = userRepository.findByEmail(email);
         Account account = null;
-        Balance balance = null;
+        Balance balance;
 
         //If user is not found it throws an exception
         if(user == null) throw new Exception("User with email: " + email + " was not found");
@@ -200,7 +202,7 @@ public class AccountDAO {
 
         //If balance has been found update the amount
         if(balance != null) {
-            float newAmount = balance.getAmount() - Math.abs(expenseAmount);
+            BigDecimal newAmount = balance.getAmount().subtract(expenseAmount.abs());
             setBalance(email, accountId, date, newAmount);
             userRepository.save(user);
         }
@@ -208,10 +210,10 @@ public class AccountDAO {
     }
 
     //Set a gain on an account
-    public void setGain(String email, Date date, long accountId, float gainAmount) throws Exception{
+    public void setGain(String email, LocalDate date, long accountId, BigDecimal gainAmount) throws Exception{
         User user = userRepository.findByEmail(email);
         Account account = null;
-        Balance balance = null;
+        Balance balance;
 
         //If user is not found it throws an exception
         if(user == null) throw new Exception("User with email: " + email + " was not found");
@@ -232,7 +234,7 @@ public class AccountDAO {
 
         //If balance has been found update the amount
         if(balance != null) {
-            float newAmount = balance.getAmount() + Math.abs(gainAmount);
+            BigDecimal newAmount = balance.getAmount().add(gainAmount.abs());
             setBalance(email, accountId, date, newAmount);
             userRepository.save(user);
         }
@@ -240,12 +242,12 @@ public class AccountDAO {
     }
 
     //Set a money movement from an account to another
-    public void setMovement(String email, Date date, long accountFromId, long accountToId, float transferAmount) throws Exception{
+    public void setMovement(String email, LocalDate date, long accountFromId, long accountToId, BigDecimal transferAmount) throws Exception{
         User user = userRepository.findByEmail(email);
         Account accountFrom = null;
         Account accountTo = null;
-        Balance balanceFrom = null;
-        Balance balanceTo = null;
+        Balance balanceFrom;
+        Balance balanceTo;
 
         //If user is not found it throws an exception
         if(user == null) throw new Exception("User with email: " + email + " was not found");
@@ -269,8 +271,8 @@ public class AccountDAO {
 
         //If balance has been found update the amount
         if(balanceFrom != null && balanceTo != null) {
-            float newAmountFrom = balanceFrom.getAmount() - Math.abs(transferAmount);
-            float newAmountTo = balanceTo.getAmount() + Math.abs(transferAmount);
+            BigDecimal newAmountFrom = balanceFrom.getAmount().subtract(transferAmount.abs());
+            BigDecimal newAmountTo = balanceTo.getAmount().add(transferAmount.abs());
 
             setBalance(email, accountFromId, date, newAmountFrom);
             setBalance(email, accountToId, date, newAmountTo);

@@ -1,8 +1,8 @@
 package com.cm.my_money_be.data;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -88,7 +88,7 @@ public class Account {
         this.balances.add(balance);
     }
 
-    public Balance getBalance(Date date){
+    public Balance getBalance(LocalDate date){
         Balance recentBalance = null;
 
         for(Balance balance : balances){

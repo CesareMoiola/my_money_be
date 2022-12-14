@@ -1,6 +1,7 @@
 package com.cm.my_money_be.data;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 
 @Entity
 @Table(name = "recurrences")
@@ -12,7 +13,7 @@ public class Recurrence {
     @JoinColumn(name = "user")
     private User user;
     private String name;
-    private float amount;
+    private BigDecimal amount;
     private boolean completed;
     private String type;
 
@@ -20,10 +21,10 @@ public class Recurrence {
         super();
     }
 
-    public Recurrence(User user, String name, float amount, String type) {
+    public Recurrence(User user, String name, BigDecimal amount, String type) {
         this.user = user;
         this.name = name;
-        this.amount = Math.abs(amount);
+        this.amount = amount.abs();
         this.completed = false;
         this.type = type;
     }
@@ -52,12 +53,12 @@ public class Recurrence {
         this.name = name;
     }
 
-    public float getAmount() {
+    public BigDecimal getAmount() {
         return amount;
     }
 
-    public void setAmount(float amount) {
-        this.amount = Math.abs(amount);
+    public void setAmount(BigDecimal amount) {
+        this.amount = amount.abs();
     }
 
     public boolean isCompleted() {

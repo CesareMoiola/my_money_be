@@ -6,7 +6,9 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import java.sql.Date;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -24,9 +26,11 @@ public class AccountsController {
     @PostMapping("/get_accounts")
     public List<AccountBean> getAccounts(@RequestBody Map<String, String> json){
         String email = json.get("email");
-        Date date;
+        LocalDate date = null;
 
-        try { date = Date.valueOf(json.get("date")); }
+        try {
+            date = LocalDate.parse(json.get("date"));
+        }
         catch (Exception e){
             logger.error("Error on date: " + json.get("date"));
             return new ArrayList<>();
@@ -38,12 +42,16 @@ public class AccountsController {
     //Save new amount of indicated account dating back to this date
     @PostMapping("/set_amount")
     public String setAmount(@RequestBody Map<String, String> json){
-        String email = json.get("email");
-        Long accountId = Long.parseLong( json.get("accountId") );
-        Date date = Date.valueOf( json.get("date") );
-        float amount = Float.parseFloat( json.get("amount") );
+        String email;
+        Long accountId;
+        LocalDate date;
+        BigDecimal amount;
 
         try{
+            email = json.get("email");
+            accountId = Long.parseLong( json.get("accountId") );
+            date = LocalDate.parse(json.get("date"));
+            amount = new BigDecimal( json.get("amount") );
             accountDAO.setBalance(email, accountId, date, amount);
         }
         catch (Exception e){
@@ -75,13 +83,16 @@ public class AccountsController {
     //Create a new account
     @PostMapping("/create_new_account")
     public String createNewAccount(@RequestBody Map<String, String> json){
-        String email = json.get("email");
-        String name = json.get("name");
-        float amount = Float.parseFloat( json.get("amount") );
-        Date date = Date.valueOf( json.get("date") );
-
+        String email;
+        String name;
+        BigDecimal amount;
+        LocalDate date;
 
         try{
+            email = json.get("email");
+            name = json.get("name");
+            amount = new BigDecimal( json.get("amount") );
+            date = LocalDate.parse(json.get("date"));
             accountDAO.createNewAccount(email, name, amount, date);
         }
         catch (Exception e){
@@ -115,12 +126,12 @@ public class AccountsController {
 
         try{
             String email = json.get("email");
-            Date date = Date.valueOf( json.get("date") );
+            LocalDate date = LocalDate.parse(json.get("date"));
             int transactionType = Integer.parseInt( json.get("transaction_type") );
             Long accountId = Long.parseLong( json.get("account") );
             Long accountToId = -1L;
             if(transactionType == 3) accountToId = Long.parseLong( json.get("account_to") );
-            float amount = Float.parseFloat( json.get("amount") );
+            BigDecimal amount = new BigDecimal( json.get("amount") );
 
             switch (transactionType){
                 //Expense

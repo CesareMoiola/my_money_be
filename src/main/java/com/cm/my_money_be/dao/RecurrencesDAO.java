@@ -8,6 +8,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,7 +49,7 @@ public class RecurrencesDAO {
     }
 
     //Insert new recurrence
-    public void createNewRecurrence(String email, String type, String name, float amount) throws Exception {
+    public void createNewRecurrence(String email, String type, String name, BigDecimal amount) throws Exception {
         User user = userRepository.findByEmail(email);
 
         //If user is not found it throws an exception
@@ -89,7 +91,7 @@ public class RecurrencesDAO {
     }
 
     //Edit recurrence
-    public void editRecurrence(String email, long id, String type, String name, float amount) throws Exception{
+    public void editRecurrence(String email, long id, String type, String name, BigDecimal amount) throws Exception{
         User user = userRepository.findByEmail(email);
         Recurrence targetRecurrence = null;
 

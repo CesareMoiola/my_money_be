@@ -1,17 +1,18 @@
 package com.cm.my_money_be.beans;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 public class AccountBean implements Serializable {
 
     private Long id;
     private String name;
-    private Float amount;
+    private BigDecimal amount;
 
 
     public AccountBean(){ super(); }
 
-    public AccountBean(long id, String name, Float amount){
+    public AccountBean(long id, String name, BigDecimal amount){
         super();
         this.id = id;
         this.name = name;
@@ -35,11 +36,11 @@ public class AccountBean implements Serializable {
         this.name = name;
     }
 
-    public float getAmount() {
+    public BigDecimal getAmount() {
         return amount;
     }
 
-    public void setAmount(float amount) {
+    public void setAmount(BigDecimal amount) {
         this.amount = amount;
     }
 

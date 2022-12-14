@@ -1,11 +1,12 @@
 package com.cm.my_money_be.beans;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 public class RecurrenceBean implements Serializable {
-    private Long id;
+    private long id;
     private String name;
-    private float amount;
+    private BigDecimal amount;
     private boolean completed;
     private String type;
 
@@ -13,7 +14,7 @@ public class RecurrenceBean implements Serializable {
         super();
     }
 
-    public RecurrenceBean(Long id, String name, float amount, boolean completed, String type) {
+    public RecurrenceBean(long id, String name, BigDecimal amount, boolean completed, String type) {
         this.id = id;
         this.name = name;
         this.amount = amount;
@@ -21,11 +22,11 @@ public class RecurrenceBean implements Serializable {
         this.type = type;
     }
 
-    public Long getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -37,11 +38,11 @@ public class RecurrenceBean implements Serializable {
         this.name = name;
     }
 
-    public float getAmount() {
+    public BigDecimal getAmount() {
         return amount;
     }
 
-    public void setAmount(float amount) {
+    public void setAmount(BigDecimal amount) {
         this.amount = amount;
     }
 

@@ -10,17 +10,19 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
+
+import static com.cm.my_money_be.utils.SavingsUtils.TARGET;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:3000")
 public class SavingsController {
 
-    Logger logger = LogManager.getLogger(SavingsController.class);
+    Logger logger = LogManager.getLogger(this.getClass());
 
     @Autowired
     SavingsDAO savingsDAO;
@@ -32,10 +34,10 @@ public class SavingsController {
         List<SavingBean> savingsBean = new ArrayList<>();
 
         try{
-            savingsBean = savingsDAO.getSavings(email);
+            savingsBean = savingsDAO.getSavingsBean(email);
         }
         catch (Exception e) {
-            logger.error(e.getMessage());
+            logger.error("getSaving - " + e);
             return savingsBean;
         }
 
@@ -47,20 +49,22 @@ public class SavingsController {
     public String saveSaving(@RequestBody Map<String, String> json){
         String email;
         String name;
-        float amount;
-        float saved;
-        Date date;
+        String type;
+        BigDecimal amount;
+        BigDecimal saved;
+        LocalDate date;
 
         try{
             email = json.get("email");
             name = json.get("name");
-            amount = Float.parseFloat( json.get("amount") );
-            saved = Float.parseFloat( json.get("saved") );
-            date = java.sql.Date.valueOf(json.get("date"));
-            savingsDAO.insertNewSavings(email, name, amount, saved, date);
+            type = json.get("type");
+            amount = new BigDecimal( json.get("amount") );
+            saved = new BigDecimal( json.get("saved") );
+            date = LocalDate.parse(json.get("date"));
+            savingsDAO.insertNewSavings(email, name, type, amount, saved,date);
         }
         catch (Exception e){
-            logger.error(e);
+            logger.error("saveSaving - " + e);
             return e.getMessage();
         }
 
@@ -80,7 +84,7 @@ public class SavingsController {
             savingsDAO.deleteSaving(email, id);
         }
         catch (Exception e){
-            logger.error(e.getMessage());
+            logger.error("deleteSaving - " + e);
             return e.getMessage();
         }
 
@@ -99,7 +103,7 @@ public class SavingsController {
             savingsDAO.activeSaving(email, id);
         }
         catch (Exception e){
-            logger.error(e.getMessage());
+            logger.error("activeSaving - " + e);
             return e.getMessage();
         }
 
@@ -109,27 +113,32 @@ public class SavingsController {
     //Edit saving
     @PostMapping("/edit_saving")
     public String editSaving(@RequestBody Map<String, String> json){
+
         String email;
         Long id;
         String name;
-        float amount;
-        float saved;
-        Date date;
+        String type;
+        BigDecimal amount;
+        BigDecimal saved;
+        LocalDate date = null;
 
         try{
             email = json.get("email");
             id = Long.parseLong(json.get("id"));
             name = json.get("name");
-            amount = Float.parseFloat( json.get("amount") );
-            saved = Float.parseFloat( json.get("saved") );
-            date = java.sql.Date.valueOf(json.get("date"));
+            type = json.get("type");
+            amount = new BigDecimal( json.get("amount") );
+            saved = new BigDecimal( json.get("saved") );
 
-            if(saved > amount) saved = amount;
+            if(type.equals(TARGET)) {
+                date = LocalDate.parse(json.get("date"));
+                if(saved.compareTo(amount) > 1) saved = amount;
+            }
 
-            savingsDAO.updateSaving(email, id, name, amount, saved, date);
+            savingsDAO.updateSaving(email, id, name, type, amount, saved, date);
         }
         catch (Exception e){
-            logger.error(e);
+            logger.error("editSaving - " + e);
             return e.getMessage();
         }
 
@@ -141,28 +150,28 @@ public class SavingsController {
     public String transaction(@RequestBody Map<String, String> json){
         String email;
         Long id;
-        float transactionAmount;
+        BigDecimal transactionAmount;
 
         try{
             email = json.get("email");
             id = Long.parseLong(json.get("id"));
-            transactionAmount = Float.parseFloat( json.get("transaction_amount") );
+            transactionAmount = new BigDecimal( json.get("transaction_amount") );
 
             //Get target saving
             Saving saving = savingsDAO.getSaving(email, id);
-            float amount = saving.getAmount();
-            float saved = saving.getSaved();
+            BigDecimal amount = saving.getAmount();
+            BigDecimal saved = saving.getSaved();
 
             //Set transaction
-            saved += transactionAmount;
-            if(saved > amount) amount = saved;
-            if(saved < 0) throw new Exception("An attempt was made to draw more than the amount in the saving");
+            saved = saved.add(transactionAmount);
+            if(saved.compareTo(amount) == 1) amount = saved;
+            if(saved.compareTo(BigDecimal.valueOf(0)) == -1 ) throw new Exception("An attempt was made to draw more than the amount in the saving");
 
             //Save transaction
-            savingsDAO.updateSaving(email, id, saving.getName(), amount, saved, saving.getDate());
+            savingsDAO.updateSaving(email, id, saving.getName(), saving.getType(), amount, saved, saving.getFinalDate());
         }
         catch (Exception e){
-            logger.error(e);
+            logger.error("transaction - " + e);
             return e.getMessage();
         }
 

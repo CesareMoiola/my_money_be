@@ -1,7 +1,9 @@
 package com.cm.my_money_be.data;
 
 import javax.persistence.*;
-import java.sql.Date;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.Date;
 
 @Entity
 @Table(name = "balance")
@@ -13,15 +15,15 @@ public class Balance {
     @ManyToOne( cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH} )
     @JoinColumn(name = "account")
     private Account account;
-    private Date date;
-    private float amount;
+    private LocalDate date;
+    private BigDecimal amount;
 
 
     public Balance(){
         super();
     }
 
-    public Balance(Account account, Date date, float amount) {
+    public Balance(Account account, LocalDate date, BigDecimal amount) {
         this.account = account;
         this.date = date;
         this.amount = amount;
@@ -44,19 +46,19 @@ public class Balance {
         this.account = account;
     }
 
-    public Date getDate() {
+    public LocalDate getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(LocalDate date) {
         this.date = date;
     }
 
-    public float getAmount() {
+    public BigDecimal getAmount() {
         return amount;
     }
 
-    public void setAmount(float amount) {
+    public void setAmount(BigDecimal amount) {
         this.amount = amount;
     }
 
