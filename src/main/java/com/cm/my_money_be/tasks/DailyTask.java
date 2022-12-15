@@ -8,7 +8,6 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-
 import javax.annotation.PostConstruct;
 
 @Component
@@ -23,16 +22,23 @@ public class DailyTask {
     @PostConstruct
     public void init() {
 
+        logger.info("Extraordinary execution of daily task");
+
         //Execute one time when application start
         savingsUtils.updateAllSaved();
+
+        logger.info("Daily task finished");
     }
 
     @Async
     @Scheduled(cron = "0 0 3 * * ?")
-    public void scheduleFixedRateTaskAsync() throws InterruptedException {
+    public void updateSavings() throws InterruptedException {
 
-        //Daily task
+        logger.info("Execution of daily task");
+
         savingsUtils.updateAllSaved();
+
+        logger.info("Daily task finished");
     }
 
 }

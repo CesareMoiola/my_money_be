@@ -164,7 +164,7 @@ public class SavingsController {
 
             //Set transaction
             saved = saved.add(transactionAmount);
-            if(saved.compareTo(amount) == 1) amount = saved;
+            if(saving.getType().equals(TARGET) && saved.compareTo(amount) == 1) amount = saved;
             if(saved.compareTo(BigDecimal.valueOf(0)) == -1 ) throw new Exception("An attempt was made to draw more than the amount in the saving");
 
             //Save transaction

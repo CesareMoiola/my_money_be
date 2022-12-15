@@ -7,13 +7,11 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.List;
-
 import static java.time.temporal.ChronoUnit.DAYS;
 
 @Component
@@ -120,11 +118,11 @@ public class SavingsUtils {
     //Update saved of all active savings
     public void updateAllSaved(){
 
-        logger.info("updateAllSaved - started");
+        logger.info("Update savings started");
 
         List<Saving> savings = savingsDAO.getUpdatableSavings();
 
-        logger.info("updateAllSaved - savings to update: " + savings.size());
+        logger.info(savings.size() + " savings to update");
 
         for (Saving saving : savings) {
             try {
@@ -135,7 +133,7 @@ public class SavingsUtils {
             }
         }
 
-        logger.info("updateAllSaved - finished ");
+        logger.info("Update savings finished");
     }
 
     //Update saved of a specific saving
@@ -162,6 +160,7 @@ public class SavingsUtils {
         if(saving.getType().equals(TARGET) && newSaved.compareTo(saving.getAmount()) > 0) newSaved = saving.getAmount();
 
         //Set updated saved
+        logger.debug("Saving " + saving.getId() + ", update saved from " +saving.getSaved() + " to " + newSaved );
         saving.setSaved(newSaved);
 
         //Set new updateDate
