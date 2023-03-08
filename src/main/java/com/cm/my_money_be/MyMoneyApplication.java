@@ -5,8 +5,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.bind.annotation.CrossOrigin;
 
-import javax.annotation.PostConstruct;
-
 @EnableScheduling
 @SpringBootApplication
 @CrossOrigin(origins = "http://localhost:3000")
