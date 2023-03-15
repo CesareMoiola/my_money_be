@@ -4,13 +4,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import java.math.BigDecimal;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/recurrence")
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "*")
 public class RecurrencesController {
 
     @Autowired
@@ -21,7 +19,7 @@ public class RecurrencesController {
      * @param userId User id
      * @return recurrences
      */
-    @GetMapping("/{userId}")
+    @GetMapping("?userId={userId}")
     public ResponseEntity<List<RecurrenceDto>> getRecurrences(@PathVariable("userId") long userId){
         List<RecurrenceDto> recurrencesDto = recurrenceService.getRecurrences(userId);
         return new ResponseEntity<>(recurrencesDto, HttpStatus.OK);

@@ -11,11 +11,11 @@ class AccountDtoTest {
     void favoriteAccountShouldGreaterThenNotFavorite(){
 
         //Setup
-        AccountDto favoirteAccount = new AccountDto(2L, "favorite", LocalDate.now(), BigDecimal.ZERO, true);
+        AccountDto favoriteAccount = new AccountDto(2L, "favorite", LocalDate.now(), BigDecimal.ZERO, true);
         AccountDto account = new AccountDto(2L, "notFavorite", LocalDate.now(), BigDecimal.ONE, false);
 
         //Assertion
-        assertEquals(1,favoirteAccount.compareTo(account));
+        assertEquals(1,favoriteAccount.compareTo(account));
     }
 
     @Test

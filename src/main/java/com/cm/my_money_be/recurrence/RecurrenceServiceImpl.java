@@ -9,8 +9,12 @@ import java.util.List;
 @Service
 public class RecurrenceServiceImpl implements RecurrenceService{
 
-    @Autowired
     RecurrenceRepository recurrenceRepository;
+
+    @Autowired
+    public RecurrenceServiceImpl( RecurrenceRepository recurrenceRepository){
+        this.recurrenceRepository = recurrenceRepository;
+    }
 
     @Override
     public List<RecurrenceDto> getRecurrences(long userId) {

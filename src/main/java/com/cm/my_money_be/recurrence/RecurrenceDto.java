@@ -7,7 +7,7 @@ import java.math.BigDecimal;
 
 @Data
 public class RecurrenceDto implements Serializable {
-    private long id;
+    private Long id;
     private String name;
     private BigDecimal amount;
     private boolean completed;
@@ -17,7 +17,7 @@ public class RecurrenceDto implements Serializable {
         super();
     }
 
-    public RecurrenceDto(long id, String name, BigDecimal amount, boolean completed, RecurrenceType type) {
+    public RecurrenceDto(Long id, String name, BigDecimal amount, boolean completed, RecurrenceType type) {
         this.id = id;
         this.name = name;
         this.amount = amount;
