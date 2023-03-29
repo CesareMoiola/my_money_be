@@ -28,13 +28,6 @@ public class DateUtilsTest {
     }
 
     @Test
-    public void getDaysInCurrentMonthTest(){
-        LocalDate date = LocalDate.of(2024,02,01);
-
-        assertEquals(29, getDaysInCurrentMonth(date));
-    }
-
-    @Test
     public void getDaysInCurrentYearTest(){
         LocalDate date1 = LocalDate.of(2024,02,01);
         LocalDate date2 = LocalDate.of(2023,02,01);
@@ -57,5 +50,14 @@ public class DateUtilsTest {
         LocalDate expected = LocalDate.of(2024,02,29);
 
         assertEquals(expected, getLastDayOfCurrentMonth(date));
+    }
+
+    @Test
+    public void daysRemainingToEndOfMonthTest(){
+        LocalDate day = LocalDate.of(2023, 3,21);
+        int expected = 10;
+        int remainingDays = DateUtils.daysRemainingToEndOfMonth(day);
+
+        assertEquals(expected, remainingDays);
     }
 }

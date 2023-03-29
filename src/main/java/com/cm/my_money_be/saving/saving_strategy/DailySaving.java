@@ -23,8 +23,8 @@ public class DailySaving implements SavingStrategy {
 
     @Override
     public BigDecimal getMonthlySaving(){
-        LocalDate firstDayOfMonth = getFirstDayOfCurrentMonth(LocalDate.now());
-        LocalDate lastDayOfMonth = getLastDayOfCurrentMonth(LocalDate.now());
+        LocalDate firstDayOfMonth = getFirstDayOfCurrentMonth(DateUtils.today());
+        LocalDate lastDayOfMonth = getLastDayOfCurrentMonth(DateUtils.today());
         int days = firstDayOfMonth.until(lastDayOfMonth).getDays() + 1;
         BigDecimal dailyAmount = getDailySaving();
 
@@ -38,8 +38,8 @@ public class DailySaving implements SavingStrategy {
 
     @Override
     public BigDecimal getRemainingToSaveThisMonth(){
-        LocalDate today = LocalDate.now();
-        long daysLeft = DateUtils.daysOfTheMonthRemaining(today);
+        LocalDate today = DateUtils.today();
+        long daysLeft = DateUtils.daysRemainingToEndOfMonth(today);
         BigDecimal dailySaving = getDailySaving();
         return dailySaving.multiply(BigDecimal.valueOf(daysLeft));
     }

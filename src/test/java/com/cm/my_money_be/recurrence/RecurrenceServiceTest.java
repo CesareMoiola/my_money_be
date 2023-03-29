@@ -8,13 +8,14 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertIterableEquals;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
 class RecurrenceServiceTest {
 
-    RecurrenceService recurrenceService;
+    private RecurrenceService recurrenceService;
 
     @Mock
     private RecurrenceRepository recurrenceRepositoryMock;
@@ -32,6 +33,9 @@ class RecurrenceServiceTest {
         given(recurrenceRepositoryMock.findById(2L)).willReturn(Optional.of(recurrences.get(1)));
         given(recurrenceRepositoryMock.findById(3L)).willReturn(Optional.of(recurrences.get(2)));
         given(recurrenceRepositoryMock.findById(4L)).willReturn(Optional.of(recurrences.get(3)));
+        given(recurrenceRepositoryMock.findById(5L)).willReturn(Optional.of(recurrences.get(4)));
+        given(recurrenceRepositoryMock.findById(6L)).willReturn(Optional.of(recurrences.get(5)));
+        given(recurrenceRepositoryMock.findById(7L)).willReturn(Optional.of(recurrences.get(6)));
 
         List<Recurrence> recurrencesOfUser1 = new ArrayList<>();
         recurrencesOfUser1.add(recurrences.get(0));
@@ -42,6 +46,12 @@ class RecurrenceServiceTest {
         recurrencesOfUser2.add(recurrences.get(2));
         recurrencesOfUser2.add(recurrences.get(3));
         given(recurrenceRepositoryMock.findByUserId(2L)).willReturn(recurrencesOfUser2);
+
+        List<Recurrence> recurrencesOfUser3 = new ArrayList<>();
+        recurrencesOfUser3.add(recurrences.get(4));
+        recurrencesOfUser3.add(recurrences.get(5));
+        recurrencesOfUser3.add(recurrences.get(6));
+        given(recurrenceRepositoryMock.findByUserId(3L)).willReturn(recurrencesOfUser3);
     }
 
 
@@ -93,6 +103,30 @@ class RecurrenceServiceTest {
         verify(recurrenceRepositoryMock).save(recurrenceUpdated);
     }
 
+    @Test
+    void getTotalOfRecurrencesTest(){
+        long userId = 1L;
+        BigDecimal expected = BigDecimal.valueOf(120);
+
+        assertEquals(expected, recurrenceService.getTotalOfRecurrences(userId));
+    }
+
+    @Test
+    void getTotalOfRemainingRecurrencesTest(){
+        long userId = 1L;
+        BigDecimal expected = BigDecimal.valueOf(-10);
+
+        assertEquals(expected, recurrenceService.getTotalOfRemainingRecurrences(userId));
+    }
+
+    @Test
+    void getAmountOfCompletedEarningsTest(){
+        long userId = 3L;
+        BigDecimal expected = BigDecimal.valueOf(22.22);
+
+        assertEquals(expected, recurrenceService.getAmountOfCompletedEarnings(userId));
+    }
+
 
     private List<Recurrence> getRecurrences(){
 
@@ -115,6 +149,20 @@ class RecurrenceServiceTest {
         recurrence4.setId(4L);
         recurrence4.setCompleted(true);
         recurrences.add(recurrence4);
+
+        Recurrence recurrence5 = new Recurrence(3L, "recurrence 5", BigDecimal.valueOf(11.11), RecurrenceType.EARNING);
+        recurrence5.setId(5L);
+        recurrences.add(recurrence5);
+
+        Recurrence recurrence6 = new Recurrence(3L, "recurrence 6", BigDecimal.valueOf(22.22), RecurrenceType.EARNING);
+        recurrence6.setId(6L);
+        recurrence6.setCompleted(true);
+        recurrences.add(recurrence6);
+
+        Recurrence recurrence7 = new Recurrence(3L, "recurrence 7", BigDecimal.valueOf(34.34), RecurrenceType.EXPENSE);
+        recurrence7.setId(7L);
+        recurrence7.setCompleted(true);
+        recurrences.add(recurrence7);
 
         return recurrences;
     }

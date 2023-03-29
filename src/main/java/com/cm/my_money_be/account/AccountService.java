@@ -32,7 +32,7 @@ public interface AccountService {
      * @param date Date on which to do the calculation
      * @return return the amount of monthly expense
      */
-    BigDecimal getTotalAmountMonthlyVariation( long userId, LocalDate date );
+    BigDecimal getMonthlyAmountVariation(long userId, LocalDate date );
 
     /**
      * Get account

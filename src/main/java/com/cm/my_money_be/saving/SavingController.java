@@ -8,7 +8,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/saving")
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "*")
 public class SavingController {
 
     @Autowired
@@ -31,10 +31,21 @@ public class SavingController {
      * @param savingDto New saving
      * @return Http response
      */
-    @PutMapping("/{userId}")
+    @PostMapping("/{userId}")
     public ResponseEntity<String> saveSaving(@PathVariable("userId") long userId, @RequestBody SavingDto savingDto) {
         savingService.saveSaving(userId, savingDto);
         return ResponseEntity.ok("Saving saved");
+    }
+
+    /**
+     * Edit saving
+     * @param savingDto Updated saving
+     * @return Http response
+     */
+    @PutMapping("/")
+    public ResponseEntity<String> updateSaving(@RequestBody SavingDto savingDto){
+        savingService.updateSaving(savingDto);
+        return ResponseEntity.ok("Saving updated");
     }
 
     /**
@@ -45,39 +56,6 @@ public class SavingController {
     @DeleteMapping("/{savingId}")
     public ResponseEntity<String> deleteSaving(@PathVariable("savingId") long savingId){
         savingService.deleteSaving(savingId);
-        return ResponseEntity.ok("Saving cancelled");
-    }
-
-    /**
-     * Activate a saving
-     * @param savingId Saving id
-     * @return Http response
-     */
-    @PutMapping("/activate{savingId}")
-    public ResponseEntity<String> activateSaving(@PathVariable("savingId") long savingId){
-        savingService.activateSaving(savingId);
-        return ResponseEntity.ok("Saving activated");
-    }
-
-    /**
-     * Deactivate a saving
-     * @param savingId Saving id
-     * @return Http response
-     */
-    @PutMapping("/deactivate{savingId}")
-    public ResponseEntity<String> deactivateSaving(@PathVariable("savingId") long savingId){
-        savingService.deactivateSaving(savingId);
-        return ResponseEntity.ok("Saving deactivated");
-    }
-
-    /**
-     * Edit saving
-     * @param savingDto Updated saving
-     * @return Http response
-     */
-    @PutMapping("/update")
-    public ResponseEntity<String> updateSaving(@RequestBody SavingDto savingDto){
-        savingService.updateSaving(savingDto);
-        return ResponseEntity.ok("Saving updated");
+        return ResponseEntity.ok("Saving deleted");
     }
 }

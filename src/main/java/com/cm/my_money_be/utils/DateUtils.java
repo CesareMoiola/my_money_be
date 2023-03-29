@@ -1,10 +1,13 @@
 package com.cm.my_money_be.utils;
-
 import java.time.LocalDate;
-import java.time.Period;
-import java.time.YearMonth;
+
+import static java.time.temporal.ChronoUnit.DAYS;
 
 public class DateUtils {
+
+    public static LocalDate today(){
+        return LocalDate.now();
+    }
 
     public static LocalDate getLastDayOfPrecedentMonth(LocalDate date){
         LocalDate lastDayOfPrecedentMonth = date.minusMonths(1).withDayOfMonth(1).withDayOfMonth(date.minusMonths(1).withDayOfMonth(1).lengthOfMonth());
@@ -12,14 +15,7 @@ public class DateUtils {
     }
 
     public static int getDaysBetween(LocalDate startingDate, LocalDate endingDate){
-        return Period.between(startingDate, endingDate).getDays();
-    }
-
-    public static int getDaysInCurrentMonth(LocalDate date){
-        YearMonth yearMonthObject = YearMonth.of(date.getYear(), date.getMonth());
-        int daysInMonth = yearMonthObject.lengthOfMonth();
-
-        return daysInMonth;
+        return (int) DAYS.between(startingDate, endingDate);
     }
 
     public static int getDaysInCurrentYear(LocalDate date){
@@ -32,7 +28,7 @@ public class DateUtils {
         return daysInCurrentYear;
     }
 
-    public static int daysOfTheMonthRemaining(LocalDate currentDate){
+    public static int daysRemainingToEndOfMonth(LocalDate currentDate){
         return (int) (currentDate.withDayOfMonth(1).lengthOfMonth() - (long)currentDate.getDayOfMonth());
     }
 

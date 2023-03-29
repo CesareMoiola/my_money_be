@@ -2,6 +2,7 @@ package com.cm.my_money_be.saving;
 
 import com.cm.my_money_be.exception.NotFoundException;
 import com.cm.my_money_be.saving.saving_strategy.*;
+import com.cm.my_money_be.utils.DateUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,14 +15,11 @@ import java.util.List;
 @Service
 public class SavingServiceImpl implements SavingService {
 
+    private final SavingRepository savingRepository;
+
     @Autowired
-    private SavingRepository savingRepository;
-
-    private Saving getSaving(long savingId){
-
-        return savingRepository
-                .findById(savingId)
-                .orElseThrow(() -> new NotFoundException("Saving " + savingId + " doesn't exist"));
+    public SavingServiceImpl(SavingRepository savingRepository){
+        this.savingRepository = savingRepository;
     }
 
     @Override
@@ -31,7 +29,7 @@ public class SavingServiceImpl implements SavingService {
         List<SavingDto> savingsDto = new ArrayList<>();
 
         for( Saving saving : savings) {
-            SavingReader strategy = new SavingReader(saving);
+            SavingStrategyImpl strategy = new SavingStrategyImpl(saving);
             SavingDto savingDto = SavingMapper.toSavingDto(saving, strategy.getDailySaving());
             savingsDto.add(savingDto);
         }
@@ -44,7 +42,7 @@ public class SavingServiceImpl implements SavingService {
     @Override
     public void saveSaving(long userId, SavingDto savingDto){
 
-        LocalDate today = LocalDate.now();
+        LocalDate today = DateUtils.today();
         Saving saving = SavingMapper.toSavingModel(savingDto, userId);
         saving.setUpdateDate(today);
         saving.setStartingDate(today);
@@ -57,26 +55,12 @@ public class SavingServiceImpl implements SavingService {
     }
 
     @Override
-    public void activateSaving(long savingId) {
-        Saving saving = getSaving(savingId);
-        saving.setActive(true);
-        savingRepository.save(saving);
-    }
-
-    @Override
-    public void deactivateSaving(long savingId) {
-        Saving saving = getSaving(savingId);
-        saving.setActive(false);
-        savingRepository.save(saving);
-    }
-
-    @Override
     public void updateSaving(SavingDto savingDto) {
         Saving oldSaving = getSaving(savingDto.getId());
         Saving newSaving = SavingMapper.toSavingModel(savingDto, oldSaving.getUserId());
 
         newSaving.setStartingDate(oldSaving.getStartingDate());
-        newSaving.setUpdateDate(LocalDate.now());
+        newSaving.setUpdateDate(DateUtils.today());
 
         savingRepository.save(newSaving);
     }
@@ -89,7 +73,7 @@ public class SavingServiceImpl implements SavingService {
     public void updateSaved(long savingId){
 
         Saving saving = getSaving(savingId);
-        SavingReader savingReader = new SavingReader(saving);
+        SavingStrategyImpl savingReader = new SavingStrategyImpl(saving);
 
         if(savingReader.isSavedToUpdate()) return;
 
@@ -97,7 +81,7 @@ public class SavingServiceImpl implements SavingService {
 
         BigDecimal newSaved = saving.getSaved().add(amountToUpdate);
         saving.setSaved(newSaved);
-        saving.setUpdateDate(LocalDate.now());
+        saving.setUpdateDate(DateUtils.today());
 
         savingRepository.save(saving);
     }
@@ -126,7 +110,7 @@ public class SavingServiceImpl implements SavingService {
 
         for(Saving saving : savings){
             if(saving.isActive()) {
-                SavingReader savingReader = new SavingReader(saving);
+                SavingStrategyImpl savingReader = new SavingStrategyImpl(saving);
                 BigDecimal savingAmount = savingReader.getRemainingToSaveThisMonth();
                 amount = amount.add(savingAmount);
             }
@@ -139,7 +123,7 @@ public class SavingServiceImpl implements SavingService {
     public BigDecimal getDailySaving(long savingId){
         Saving saving = savingRepository.findById(savingId)
                 .orElseThrow( () ->  new NotFoundException("Saving " + savingId + " doesn't exist"));
-        SavingReader savingReader = new SavingReader(saving);
+        SavingStrategyImpl savingReader = new SavingStrategyImpl(saving);
         return savingReader.getDailySaving();
     }
 
@@ -149,7 +133,7 @@ public class SavingServiceImpl implements SavingService {
         List<Saving> savings = savingRepository.findByUserId(userId);
 
         for(Saving saving : savings){
-            SavingReader savingReader = new SavingReader(saving);
+            SavingStrategyImpl savingReader = new SavingStrategyImpl(saving);
             if(saving.isActive()) dailySavings = dailySavings.add(savingReader.getDailySaving());
         }
 
@@ -161,9 +145,19 @@ public class SavingServiceImpl implements SavingService {
         BigDecimal amount = BigDecimal.valueOf(0);
 
         for(Saving saving : savingRepository.findByUserId(userId)){
-            amount = amount.add(getMonthlySaving(saving.getId()));
+
+            SavingStrategy savingStrategy = new SavingStrategyImpl(saving);
+            amount = amount.add(savingStrategy.getMonthlySaving());
         }
 
         return amount;
+    }
+
+
+    private Saving getSaving(long savingId){
+
+        return savingRepository
+            .findById(savingId)
+            .orElseThrow(() -> new NotFoundException("Saving " + savingId + " doesn't exist"));
     }
 }

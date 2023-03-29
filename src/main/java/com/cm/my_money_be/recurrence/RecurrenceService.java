@@ -1,5 +1,6 @@
 package com.cm.my_money_be.recurrence;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public interface RecurrenceService {
@@ -11,4 +12,10 @@ public interface RecurrenceService {
     void deleteRecurrence(long recurrenceId);
 
     void updateRecurrence(RecurrenceDto recurrenceDto);
+
+    BigDecimal getTotalOfRecurrences(long userId);
+
+    BigDecimal getTotalOfRemainingRecurrences(long userId);
+
+    BigDecimal getAmountOfCompletedEarnings(long userId);
 }

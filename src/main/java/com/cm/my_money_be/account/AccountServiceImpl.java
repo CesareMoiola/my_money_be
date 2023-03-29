@@ -16,11 +16,11 @@ import java.util.Optional;
 @Slf4j
 public class AccountServiceImpl implements AccountService{
 
-    AccountRepository accountRepository;
+    private final AccountRepository accountRepository;
 
-    BalanceService balanceService;
+    private final BalanceService balanceService;
 
-    AccountMapper accountMapper;
+    private final AccountMapper accountMapper;
 
     @Autowired
     public AccountServiceImpl(
@@ -64,7 +64,7 @@ public class AccountServiceImpl implements AccountService{
     }
 
     @Override
-    public BigDecimal getTotalAmountMonthlyVariation( long userId, LocalDate date ) {
+    public BigDecimal getMonthlyAmountVariation(long userId, LocalDate date ) {
         LocalDate lastDayOfPrecedentMonth = DateUtils.getLastDayOfPrecedentMonth(date);
         BigDecimal currentAmount = getTotalAmount(userId, date);
         BigDecimal precedentMonthAmount = getTotalAmount(userId, lastDayOfPrecedentMonth);

@@ -49,14 +49,12 @@ class AccountServiceTest {
         given(accountRepositoryMock.findById(2L)).willReturn(Optional.of(accounts.get(1)));
         given(accountRepositoryMock.findById(3L)).willReturn(Optional.of(accounts.get(2)));
         given(accountRepositoryMock.findById(4L)).willReturn(Optional.of(accounts.get(3)));
+        given(accountRepositoryMock.findByUserId(1L)).willReturn(accounts);
     }
 
 
     @Test
     void getUserAccounts(){
-
-        //Setup
-        given(accountRepositoryMock.findByUserId(1L)).willReturn(accounts);
 
         List<AccountDto> expectedAccounts = new ArrayList<>();
 
@@ -71,8 +69,6 @@ class AccountServiceTest {
 
     @Test
     void updateAccountTest(){
-        //Setup
-        given(accountRepositoryMock.findByUserId(1L)).willReturn(accounts);
 
         Account accountToUpdate = accounts.get(3);
         List<Balance> balancesToUpdate = accountToUpdate.getBalances();
@@ -208,6 +204,18 @@ class AccountServiceTest {
         assertDoesNotThrow(()->accountService.saveTransaction(transaction2));
     }
 
+    @Test
+    void getTotalAmountTest(){
+        BigDecimal expected = new BigDecimal(183);
+        assertEquals(expected, accountService.getTotalAmount(1L,LocalDate.of(2023,1,2)));
+    }
+
+    @Test
+    void getMonthlyAmountVariationTest(){
+        BigDecimal expected = BigDecimal.valueOf(92.24);
+        assertEquals(expected, accountService.getMonthlyAmountVariation(1L,LocalDate.of(2023,1,2)));
+    }
+
 
     private List<Account> getAccounts(){
         List<Account> accounts = new ArrayList<>();
@@ -216,12 +224,10 @@ class AccountServiceTest {
         Account account1 = new Account(1L,"Account 1",false);
         account1.setId(1L);
         List<Balance> balances = new ArrayList<>();
-        Balance balance1 = new Balance(1L, LocalDate.of(2023,1,1), BigDecimal.valueOf(100));
-        balances.add(balance1);
-        Balance balance2 = new Balance(1L, LocalDate.of(2023,1,2), BigDecimal.valueOf(150));
-        balances.add(balance2);
-        Balance balance3 = new Balance(1L, LocalDate.of(2023,1,3), BigDecimal.valueOf(200));
-        balances.add(balance3);
+        balances.add(new Balance(1L, LocalDate.of(2022,12,12), BigDecimal.valueOf(77.77)));
+        balances.add(new Balance(1L, LocalDate.of(2023,1,1), BigDecimal.valueOf(100)));
+        balances.add(new Balance(1L, LocalDate.of(2023,1,2), BigDecimal.valueOf(150)));
+        balances.add(new Balance(1L, LocalDate.of(2023,1,3), BigDecimal.valueOf(200)));
         account1.setBalances(balances);
         accounts.add(account1);
 
@@ -229,12 +235,10 @@ class AccountServiceTest {
         Account account2 = new Account(1L,"Account 2",false);
         account2.setId(2L);
         balances = new ArrayList<>();
-        balance1 = new Balance(2L, LocalDate.of(2023,1,2), BigDecimal.valueOf(33));
-        balances.add(balance1);
-        balance2 = new Balance(2L, LocalDate.of(2023,1,3), BigDecimal.valueOf(66));
-        balances.add(balance2);
-        balance3 = new Balance(2L, LocalDate.of(2023,1,4), BigDecimal.valueOf(99));
-        balances.add(balance3);
+        balances.add(new Balance(2L, LocalDate.of(2022,7,7), BigDecimal.valueOf(12.99)));
+        balances.add(new Balance(2L, LocalDate.of(2023,1,2), BigDecimal.valueOf(33)));
+        balances.add(new Balance(2L, LocalDate.of(2023,1,3), BigDecimal.valueOf(66)));
+        balances.add(new Balance(2L, LocalDate.of(2023,1,4), BigDecimal.valueOf(99)));
         account2.setBalances(balances);
         accounts.add(account2);
 
@@ -242,12 +246,9 @@ class AccountServiceTest {
         Account account3 = new Account(1L,"Account 3",true);
         account3.setId(3L);
         balances = new ArrayList<>();
-        balance1 = new Balance(3L, LocalDate.of(2023,1,3), BigDecimal.valueOf(25));
-        balances.add(balance1);
-        balance2 = new Balance(3L, LocalDate.of(2023,1,4), BigDecimal.valueOf(50));
-        balances.add(balance2);
-        balance3 = new Balance(3L, LocalDate.of(2023,1,5), BigDecimal.valueOf(75));
-        balances.add(balance3);
+        balances.add(new Balance(3L, LocalDate.of(2023,1,3), BigDecimal.valueOf(25)));
+        balances.add(new Balance(3L, LocalDate.of(2023,1,4), BigDecimal.valueOf(50)));
+        balances.add(new Balance(3L, LocalDate.of(2023,1,5), BigDecimal.valueOf(75)));
         account3.setBalances(balances);
         accounts.add(account3);
 
@@ -255,10 +256,8 @@ class AccountServiceTest {
         Account accountToUpdate = new Account(1L, "Account", true);
         accountToUpdate.setId(4L);
         List<Balance> balancesToUpdate = new ArrayList<>();
-        balance1 = new Balance(4L, LocalDate.of(2023,2,1), BigDecimal.valueOf(50));
-        balancesToUpdate.add(balance1);
-        balance2 = new Balance(4L, LocalDate.of(2023,2,2), BigDecimal.valueOf(100));
-        balancesToUpdate.add(balance2);
+        balancesToUpdate.add(new Balance(4L, LocalDate.of(2023,2,1), BigDecimal.valueOf(50)));
+        balancesToUpdate.add(new Balance(4L, LocalDate.of(2023,2,2), BigDecimal.valueOf(100)));
         accountToUpdate.setBalances(balancesToUpdate);
         accounts.add(accountToUpdate);
 

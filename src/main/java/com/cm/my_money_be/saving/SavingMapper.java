@@ -19,6 +19,7 @@ public class SavingMapper {
         savingDto.setDailyAmount(dailyAmount);
         savingDto.setSaved(saving.getSaved());
         savingDto.setActive(saving.isActive());
+        savingDto.setFinalDate(saving.getFinalDate());
 
         return savingDto;
     }
@@ -27,6 +28,7 @@ public class SavingMapper {
         Saving saving = new Saving();
 
         saving.setUserId(userId);
+        saving.setId(savingDto.getId());
         saving.setName(savingDto.getName());
         saving.setType(savingDto.getType());
         saving.setAmount(savingDto.getAmount());

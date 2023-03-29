@@ -1,6 +1,7 @@
 package com.cm.my_money_be.saving;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 
 public interface SavingService {
@@ -10,10 +11,6 @@ public interface SavingService {
     void saveSaving(long userId, SavingDto savingDto);
 
     void deleteSaving(long savingId);
-
-    void activateSaving(long savingId);
-
-    void deactivateSaving(long savingId);
 
     void updateSaving(SavingDto savingDto);
 

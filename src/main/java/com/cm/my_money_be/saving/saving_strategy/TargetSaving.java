@@ -7,7 +7,6 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 
-import static com.cm.my_money_be.saving.SavingType.TARGET;
 import static com.cm.my_money_be.utils.DateUtils.*;
 
 public class TargetSaving implements SavingStrategy {
@@ -21,12 +20,17 @@ public class TargetSaving implements SavingStrategy {
 
     @Override
     public BigDecimal getDailySaving(){
-        BigDecimal dailySaving = BigDecimal.valueOf(0);
-        int remainingDays = getDaysBetween(LocalDate.now(), saving.getFinalDate());
+
+        BigDecimal dailySaving;
+        LocalDate today = DateUtils.today();
+        LocalDate targetDate = saving.getFinalDate();
+
+        int remainingDays = getDaysBetween(today, targetDate);
+
         BigDecimal remainingToSave = saving.getAmount().subtract(saving.getSaved());
 
         if(remainingDays <= 0) dailySaving = remainingToSave;
-        else  remainingToSave.divide(BigDecimal.valueOf(remainingDays), 2, RoundingMode.UP);
+        else  dailySaving = remainingToSave.divide(BigDecimal.valueOf(remainingDays), 2, RoundingMode.UP);
 
         return dailySaving;
     }
@@ -35,8 +39,8 @@ public class TargetSaving implements SavingStrategy {
     public BigDecimal getMonthlySaving(){
         LocalDate startingDate;
         LocalDate endingDate;
-        LocalDate firstDayOfMonth = getFirstDayOfCurrentMonth(LocalDate.now());
-        LocalDate lastDayOfMonth = getLastDayOfCurrentMonth(LocalDate.now());
+        LocalDate firstDayOfMonth = getFirstDayOfCurrentMonth(DateUtils.today());
+        LocalDate lastDayOfMonth = getLastDayOfCurrentMonth(DateUtils.today());
         BigDecimal dailySaving = getDailySaving();
 
         //Calculate startingDate;
@@ -59,8 +63,8 @@ public class TargetSaving implements SavingStrategy {
 
     @Override
     public BigDecimal getRemainingToSaveThisMonth(){
-        LocalDate today = LocalDate.now();
-        long daysLeft = DateUtils.daysOfTheMonthRemaining(today);
+        LocalDate today = DateUtils.today();
+        long daysLeft = DateUtils.daysRemainingToEndOfMonth(today);
         BigDecimal dailySaving = getDailySaving();
         long targetDayLeft = today.until(saving.getFinalDate()).getDays();
         if(targetDayLeft < daysLeft) daysLeft = targetDayLeft;

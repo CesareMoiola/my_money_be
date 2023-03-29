@@ -1,23 +1,19 @@
 package com.cm.my_money_be.saving;
 
-import com.cm.my_money_be.user.User;
-import lombok.Getter;
-import lombok.Setter;
-
+import lombok.Data;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-@Getter
-@Setter
 @Entity
+@Data
 @Table(name = "savings")
 public class Saving {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
     @Column(name="user")
-    private long userId;
+    private Long userId;
     private String name;
     @Enumerated(EnumType.STRING)
     private SavingType type;
@@ -27,4 +23,16 @@ public class Saving {
     private LocalDate finalDate;
     private LocalDate updateDate;
     private boolean active;
+
+    public Saving() {
+        super();
+    }
+
+    public Saving(long userId, String name, SavingType type, BigDecimal amount, BigDecimal saved) {
+        this.userId = userId;
+        this.name = name;
+        this.type = type;
+        this.amount = amount;
+        this.saved = saved;
+    }
 }

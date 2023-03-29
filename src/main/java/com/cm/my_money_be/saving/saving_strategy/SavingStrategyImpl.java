@@ -5,16 +5,15 @@ import com.cm.my_money_be.saving.SavingException;
 import com.cm.my_money_be.utils.DateUtils;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
-import static com.cm.my_money_be.saving.SavingType.TARGET;
+
 import static java.time.temporal.ChronoUnit.DAYS;
 
-public class SavingReader implements SavingStrategy{
+public class SavingStrategyImpl implements SavingStrategy{
 
     private final Saving saving;
     private final SavingStrategy strategy;
 
-    public SavingReader(Saving saving){
+    public SavingStrategyImpl(Saving saving){
 
         this.saving = saving;
 
@@ -48,8 +47,8 @@ public class SavingReader implements SavingStrategy{
     }
 
     public boolean isSavedToUpdate(){
-        SavingStrategy strategy = new SavingReader(saving);
-        long daysToUpdate = DAYS.between(saving.getUpdateDate(), LocalDate.now());
+        SavingStrategy strategy = new SavingStrategyImpl(saving);
+        long daysToUpdate = DAYS.between(saving.getUpdateDate(), DateUtils.today());
         boolean isSavingActive = saving.isActive();
         boolean isCompleted = strategy.isCompleted();
 
@@ -57,8 +56,8 @@ public class SavingReader implements SavingStrategy{
     }
 
     public BigDecimal getAmountToUpdate(){
-        long daysToUpdate = DAYS.between(saving.getUpdateDate(), LocalDate.now());
-        SavingStrategy strategy = new SavingReader(saving);
+        long daysToUpdate = DAYS.between(saving.getUpdateDate(), DateUtils.today());
+        SavingStrategy strategy = new SavingStrategyImpl(saving);
         BigDecimal dailySaving = strategy.getDailySaving();
 
         return dailySaving.multiply(BigDecimal.valueOf(daysToUpdate));
